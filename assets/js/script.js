@@ -1,17 +1,20 @@
 console.log("hello")
-// ###########replace
+
 var config = {
-  apiKey: "AIzaSyA_QypGPkcjPtylRDscf7-HQl8ribnFeIs",
-  authDomain: "time-sheet-55009.firebaseapp.com",
-  databaseURL: "https://time-sheet-55009.firebaseio.com",
-  storageBucket: "time-sheet-55009.appspot.com"
-};
+    apiKey: "AIzaSyBjmD3AxT2YG3nmtna4Hdg1L3oTVa82d1Y",
+    authDomain: "train-schedule-32e68.firebaseapp.com",
+    databaseURL: "https://train-schedule-32e68.firebaseio.com",
+    projectId: "train-schedule-32e68",
+    storageBucket: "",
+    messagingSenderId: "730356922851"
+  };
+  
 
 firebase.initializeApp(config);
 
 var database = firebase.database();
 
-// 2. Button for adding Employees
+// 2. Buttons
 $("#add-train-btn").on("click", function(event) {
   event.preventDefault();
 
@@ -20,23 +23,22 @@ $("#add-train-btn").on("click", function(event) {
   var diyDestination = $("#destination-input").val().trim();
 
 //   ÷###dd momentjs
-  var diyFirst = moment($("#first-input").val().trim(), "MM/DD/YYYY").format("X");
-
-
-  var empFreq = $("#freq-input").val().trim();
+//   var diyFirst = moment($("#first-input").val().trim(), "MM/DD/YYYY").format("X");
+  var diyFirst = $("#first-input").val().trim();
+  var diyFreq = $("#freq-input").val().trim();
 
   // Creates local "temporary" object for holding employee data
   var newData = {
     train: diyTrain,
-    role: diyDestination,
-    start: diyFirst,
-    rate: diyFreq
+    destination: diyDestination,
+    first: diyFirst,
+    freq: diyFreq
   };
 
-  // Uploads employee data to the database
+  // Uploads database
   database.ref().push(newData);
 
-  // Logs everything to console
+  
   console.log(newData.train);
   console.log(newData.destination);
   console.log(newData.first);
@@ -67,7 +69,8 @@ database.ref().on("child_added", function(childSnapshot) {
   console.log(diyFirst);
   console.log(diyFreq);
 
-  // Prettify the employee start #### check momentjs layout
+  // Prettify #### check momentjs layout####
+
   var diyTrainPretty = moment.unix(diyTrain).format("MM/DD/YYYY");
 
 
@@ -108,12 +111,12 @@ database.ref().on("child_added", function(childSnapshot) {
 
   // Calculate the months worked using hardcore math
   // To calculate the months worked#########check moment js layout
-  var diyMonths = moment().diff(moment(diyFirst, "X"), "months");
-  console.log(diyNextArrival);
+//   var diyMonths = moment().diff(moment(diyFirst, "X"), "months");
+//   console.log(diyNextArrival);
 
-  // Calculate the total billed rate
-  var diyMinutesAway = diyNextArrival * diyFreq;
-  console.log(diyMinutesAway);
+//   // Calculate the total billed rate
+//   var diyMinutesAway = diyNextArrival * diyFreq;
+//   console.log(diyMinutesAway);
 
   // Create the new row
 //   #########check this out#####
@@ -122,8 +125,8 @@ database.ref().on("child_added", function(childSnapshot) {
     $("<td>").text(diyDestination),
     $("<td>").text(diyFirst),
     $("<td>").text(diyFreq),
-    $("<td>").text(diyNextArrival),
-    $("<td>").text(diyMinutesAway)
+    // $("<td>").text(diyNextArrival),
+    // $("<td>").text(diyMinutesAway)
   );
 
   // Append the new row to the table
