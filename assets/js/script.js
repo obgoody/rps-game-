@@ -23,9 +23,9 @@ $("#add-train-btn").on("click", function(event) {
   var diyDestination = $("#destination-input").val().trim();
 
 //   ÷###dd momentjs
-//   var diyFirst = moment($("#first-input").val().trim(), "MM/DD/YYYY").format("X");
-  var diyFirst = $("#first-input").val().trim();
-  var diyFreq = $("#freq-input").val().trim();
+
+  var diyFirst = moment($("#first-input").val().trim(),"HH:mm").format("hh:mm");
+  var diyFreq = $("#time-input").val().trim();
 
   // Creates local "temporary" object for holding employee data
   var newData = {
@@ -53,70 +53,45 @@ $("#add-train-btn").on("click", function(event) {
   $("#freq-input").val("");
 });
 
-// 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
+// 3. Create Firebase event for adding info to the database and a row in the html when a user adds an entry
 database.ref().on("child_added", function(childSnapshot) {
   console.log(childSnapshot.val());
 
   // Store everything into a variable.
   var diyTrain = childSnapshot.val().train;
-  var diyDestination = childSnapshot.val().role;
-  var diyFirst = childSnapshot.val().start;
-  var diyFreq = childSnapshot.val().rate;
+  var diyDestination = childSnapshot.val().destination;
+  var diyFirst = childSnapshot.val().first;
+  var diyFreq = childSnapshot.val().freq;
 
-  // Employee Info
+
+  var timeTest = diyFirst;
+  var timeArr = diyFirst.split(":");
+  var trainTime = moment().hours(timeArr[0]).minutes(timeArr[1]);
+  // var max = moment.max(moment(),trainTime);
+  
+//  if(max === trainTime){
+// console.log("train arriving today");
+//  }
+
+
+  console.log("okeedokee " , timeArr[1]%diyFreq);
+
+
+  var diyMinutesAway = moment()._d.toString();
+  console.log("hello " , diyMinutesAway);
+   var diyNextArrival = diyMinutesAway.indexOf(':');
+   var time = diyMinutesAway.slice(diyNextArrival - 2, diyNextArrival + 3);
+   var hour = time.split(":")[0]
+   var min = Number(time.split(":")[1]) + timeArr[0] % diyFreq  ;
+   console.log("hellooo" , hour + min);
+
+  // Train Info
   console.log(diyTrain);
   console.log(diyDestination);
   console.log(diyFirst);
   console.log(diyFreq);
 
-  // Prettify #### check momentjs layout####
-
-  var diyTrainPretty = moment.unix(diyTrain).format("MM/DD/YYYY");
-
-
-//   =====================
-
-//  var tFrequency = 3;
-
-//     // Time is 3:30 AM
-//     var firstTime = "03:30";
-
-//     // First Time (pushed back 1 year to make sure it comes before current time)
-//     var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
-//     console.log(firstTimeConverted);
-
-//     // Current Time
-//     var currentTime = moment();
-//     console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
-
-//     // Difference between the times
-//     var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-//     console.log("DIFFERENCE IN TIME: " + diffTime);
-
-//     // Time apart (remainder)
-//     var tRemainder = diffTime % tFrequency;
-//     console.log(tRemainder);
-
-//     // Minute Until Train
-//     var tMinutesTillTrain = tFrequency - tRemainder;
-//     console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
-
-//     // Next Train
-//     var nextTrain = moment().add(tMinutesTillTrain, "minutes");
-//     console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
-
-    // ========================
-
-
-
-  // Calculate the months worked using hardcore math
-  // To calculate the months worked#########check moment js layout
-//   var diyMonths = moment().diff(moment(diyFirst, "X"), "months");
-//   console.log(diyNextArrival);
-
-//   // Calculate the total billed rate
-//   var diyMinutesAway = diyNextArrival * diyFreq;
-//   console.log(diyMinutesAway);
+  
 
   // Create the new row
 //   #########check this out#####
@@ -125,8 +100,8 @@ database.ref().on("child_added", function(childSnapshot) {
     $("<td>").text(diyDestination),
     $("<td>").text(diyFirst),
     $("<td>").text(diyFreq),
-    // $("<td>").text(diyNextArrival),
-    // $("<td>").text(diyMinutesAway)
+    $("<td>").text(diyNextArrival),
+    $("<td>").text(time)
   );
 
   // Append the new row to the table
